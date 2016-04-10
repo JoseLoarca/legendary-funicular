@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Web Service - 2014224</title>
+    <link rel="icon" href="https://maxcdn.icons8.com/Color/PNG/24/Files/asp-24.png" title="ASP" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="css/custom.css" type="text/css"/>
+    <script src="Scripts/jquery-2.2.2.min.js"></script>
+    <!--Script para que la tabla aparezca al hacer click.-->
+    <script>
+        $(document).ready(function () {
+            $("#button").click(function () {
+                $("#telefonos-table").show();
+            });
+        });    
+    </script>
+    <!--Desactiva el botón "Request" después de hacer click.-->
+    <script>
+        $(document).ready(function () {
+            $("#button").click(function () {
+                this.disabled = true;
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1 >Cliente <em>Web Service</em></h1>
+    <div class="center">
+        <a>Seleccione un método:</a>
+        <select class="metodo">
+            <!--La opción GET es la única activa por el momento.-->
+            <option value="get">GET</option>
+            <option value="post" disabled>POST</option>
+            <option value="put" disabled>PUT</option>
+            <option value="delete" disabled>DELETE</option>
+        </select>
+        <button onclick="requestWS()" class="button" id="button"><span>Request</span></button>
+    </div>
+    
+    <!--Tabla de telefonos. Escondida por defecto, aparece al hacer la petición GET.-->
+    <div class="center">
+        <table hidden id="telefonos-table">
+            <tr>
+                <th colspan="4">Listado de Teléfonos</th>
+            </tr>
+            <tr>
+                <th>Modelo</th>
+                <th>Marca</th>
+                <th>Almacenamiento Interno</th>
+                <th>Memoria RAM</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        
+        var metodo ="";
+        $(".metodo").on("change", function () {
+             metodo= this.value;
+        });
+        function requestWS() {
+            var urlBase = "http://localhost:51931/";
+            $.ajax({
+                url: urlBase + "api/telefono",
+                method: metodo
+            }).done(function (datos) {
+                $.each(datos, function (i, item) {
+                    var $tr = $('<tr>').append(
+                        $('<td>').text(item.modelo),
+                        $('<td>').text(item.marca),
+                        $('<td>').text(item.almacenamientoInterno),
+                        $('<td>').text(item.memoriaRam)
+                        ).appendTo('#telefonos-table');
+                });
+            }).error(function (error) {
+                $("#resultado").text(resultado);
+            });
+
+        }
+    </script>
+   
+    <footer>
+        <h6>Copyright &copy; Kinal - 2014224</h6>
+    </footer>
+</body>
+</html>
